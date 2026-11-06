@@ -5,6 +5,8 @@
 <meta name="theme-color" content="#0f6e56">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>مصاريف عمارة الحاج رفعت</title>
 <style>
@@ -35,7 +37,7 @@ button{font-family:inherit;font-size:16px;border:0;border-radius:10px;padding:12
 .it small{color:var(--mu);display:block;font-size:12px;margin-top:2px}
 .it .a{font-weight:700;white-space:nowrap;text-align:left}
 .it .x{background:none;color:var(--dn);padding:0 4px;font-size:12px;display:block;margin-top:2px}
-.tg{display:inline-block;background:var(--bg);border:1px solid var(--bd);border-radius:99px;padding:4px 10px;margin:3px;font-size:13px}.tg b{color:var(--dn);margin-inline-start:6px;cursor:pointer}.mgt{font-size:13px;color:var(--mu);margin:12px 0 4px}.add{display:flex;gap:6px;margin-top:6px}.add button{padding:8px 14px;font-size:14px}.empty{color:var(--mu);text-align:center;padding:16px;font-size:14px}
+.tg{display:inline-block;background:var(--bg);border:1px solid var(--bd);border-radius:99px;padding:4px 10px;margin:3px;font-size:13px}.tg b{color:var(--dn);margin-inline-start:6px;cursor:pointer}.mgt{font-size:13px;color:var(--mu);margin:12px 0 4px}.add{display:flex;gap:6px;margin-top:6px}.add button{padding:8px 14px;font-size:14px}.bar{display:flex;gap:6px;margin-top:6px}.bar select{flex:1}.bar button{padding:8px 12px;font-size:14px}.empty{color:var(--mu);text-align:center;padding:16px;font-size:14px}
 #rep{position:fixed;left:-9999px;top:0;width:794px;color:#111;direction:rtl;font-family:Tahoma,Arial,sans-serif}
 #rep .pg{width:794px;height:1123px;padding:36px;background:#fff;overflow:hidden;margin-bottom:10px}
 #rep .tt{font-size:20px;font-weight:700;text-align:center;margin:0 0 6px}
@@ -47,8 +49,11 @@ button{font-family:inherit;font-size:16px;border:0;border-radius:10px;padding:12
 </style>
 </head>
 <body>
+<div id="dlg" style="display:none;position:fixed;inset:0;z-index:98;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:20px"><div class="card" style="width:100%;max-width:340px;margin:0"><div id="dt" style="font-weight:700;margin-bottom:8px"></div><input id="di"><div class="row" style="margin-top:10px"><button class="pri" id="dok" style="margin:0">حفظ</button><button class="sec" id="dno">إلغاء</button></div></div></div>
 <div id="lg" style="display:none;position:fixed;inset:0;z-index:99;background:var(--bg);align-items:center;justify-content:center;padding:20px"><div class="card" style="width:100%;max-width:340px"><h1>🏗️ تسجيل الدخول</h1><label>الإيميل</label><input id="em" type="email" autocomplete="username" dir="ltr"><label>الباسورد</label><input id="pw" type="password" autocomplete="current-password" dir="ltr"><button class="pri" id="go">دخول</button><div id="le" style="color:var(--dn);text-align:center;margin-top:8px;font-size:13px"></div></div></div>
-<h1>🏗️ مصاريف عمارة الحاج رفعت</h1>
+<div class="bar"><select id="bsel"></select><button class="sec" id="badd">➕ عمارة</button><button class="sec" id="bren">✏️</button></div>
+<button class="sec" id="inst" style="display:none;width:100%;margin-bottom:10px">📲 ثبّت البرنامج على التليفون</button>
+<h1 id="ttl">🏗️ مصاريف عمارة الحاج رفعت</h1>
 <div class="stats" id="stats"></div>
 <div class="tot">الإجمالي: <b id="tot">0</b></div>
 
@@ -120,8 +125,8 @@ var $=function(i){return document.getElementById(i)};
 var SEED="17/06|من سعر الارض|20000|r|L\n17/06|من سعر الارض|60000|m|L\n17/06|لودر للحفر|20000|m|K\n18/06|باقي حساب الحفار|11000|m|K\n18/06|عمال تسوية اللبشة|1500|m|K\n20/06|اربع عربيات خرسانة|106000|m|K\n20/06|فورمجية|2000|m|K\n21/06|حديد|739050|r|K\n01/07|خرسانة للخزان 3م|20000|m|K\n04/07|من حساب الخرسانة الجاهزة|406000|r|K\n04/07|باقي حساب الخرسانة|20000|m|K\n05/07|محمد مقاول خرسانة|100000|r|K\n10/07|خرسانة 5م|13500|r|K\n10/07|خرسانة|14000|r|K\n14/07|خرسانة الاعمدة 45م|123750|r|K\n15/07|محمد مقاول خرسانة|50000|r|K\n22/07|محمد مقاول خرسانة|50000|r|K\n22/07|طرد حديد|109000|r|K\n24/07|محمد مقاول خرسانة|70000|r|K\n24/07|من حساب المون|48000|r|K\n24/07|دخان خلاطة|1300|m|K\n25/07|من حساب المون|8000|r|K\n26/07|من حساب المون|150000|r|K\n27/07|حجز 10طن حديد|368150|r|K\n27/07|باقي حساب الموان|76000|r|K\n29/07|مون عمدان الدور الاول|8000|r|K\n03/08|من حساب المون|15000|r|K\n03/08|مقاول نجارة محمد سليمان|40000|r|K\n06/08|من حساب المون|70000|r|K\n08/08|مقاول نجارة محمد سليمان|50000|r|K\n08/08|من حساب المون|37000|r|K\n10/08|مقاول نجارة محمد سليمان|50000|r|K\n15/08|سلك رباط ولودر|6800|r|K\n16/08|10طن حديد|300000|r|K\n18/08|مقاول نجارة محمد سليمان|50000|r|K\n20/08|من حساب المون|30000|r|K\n23/08|من حساب الحديد|76400|r|K\n23/08|مقاول نجارة محمد سليمان|20000|r|K\n25/08|البامب|100000|r|K\n25/08|البامب|100000|r|K\n26/08|باقي حساب البامب|24000|r|K\n26/08|مقاول نجارة محمد سليمان|70000|r|K\n30/08|مقاول نجارة محمد سليمان|96000|r|K\n30/08|حديد|30000|r|K\n31/08|مون|30000|r|K\n03/09|حديد|50000|r|K\n06/09|حديد|150000|r|K\n07/09|مون|29000|r|K\n08/09|حديد|50000|r|K\n09/09|مون|30000|r|K\n11/09|محمد الموان|10000|r|K\n12/09|مقاول نجارة محمد سليمان|50000|r|K\n13/09|مقاول نجارة محمد سليمان|50000|r|K\n14/09|محمد الموان|60000|r|K\n15/09|حديد|140000|r|K\n17/09|مقاول نجارة محمد سليمان|50000|r|K\n17/09|محمد الموان|20000|r|K\n19/09|محمد الموان|30000|r|K\n20/09|مقاول نجارة محمد سليمان|30000|r|K\n22/09|حديد|200000|r|K\n24/09|محمد الموان|50000|r|K\n26/09|مقاول نجارة محمد سليمان|100000|r|K\n26/09|محمد الموان|10000|r|K\n26/09|محمد الموان|20000|r|K\n28/09|محمد الموان|30000|r|K\n28/09|حديد|200000|r|K\n30/09|مقاول نجارة محمد سليمان|50000|r|K\n02/10|محمد الموان|50000|r|K\n06/10|حديد|200000|r|K\n07/10|مقاول نجارة محمد سليمان|60000|r|K\n08/10|محمد الموان|60000|r|K\n09/10|عربيتين سن|3600|r|K\n09/10|مقاول نجارة محمد سليمان|50000|r|K\n09/10|محمد الموان|20000|r|K\n13/10|محمد الموان|50000|r|K\n14/10|حديد|100000|r|K\n16/10|مقاول نجارة محمد سليمان|50000|r|K\n16/10|محمد الموان|20000|r|K\n18/10|محمد الموان|20000|r|K\n20/10|حديد|150000|r|K\n20/10|مقاول نجارة محمد سليمان|50000|r|K\n21/10|محمد الموان|20000|r|K\n23/10|محمد الموان|40000|r|K\n23/10|مقاول نجارة محمد سليمان|50000|r|K\n25/10|محمد الموان|35000|r|K\n26/10|حديد|150000|r|K\n27/10|محمد الموان|50000|r|K\n28/10|مقاول نجارة محمد سليمان|60000|r|K\n29/10|محمد الموان|39700|r|K\n01/11|مقاول نجارة محمد سليمان|30000|r|K\n02/11|مقاول نجارة محمد سليمان|20000|r|K\n01/08|نقلة طوب|38000|r|M\n01/08|من حساب الطوب|66000|r|M\n03/08|من حساب المون|30000|r|M\n04/08|رضا مقاول مباني|10000|r|M\n05/08|عتب|800|m|M\n10/08|رضا مقاول مباني|5000|r|M\n11/08|رضا مقاول مباني|5000|m|M\n15/08|رضا مقاول مباني|3000|r|M\n23/08|رضا مقاول مباني|2500|r|M\n25/08|رضا مقاول مباني|10000|r|M\n28/08|رضا مقاول مباني|10000|r|M\n28/08|عربي ونش|15750|r|M\n30/08|طوب|24000|r|M\n31/08|رضا مقاول مباني|5000|r|M\n01/09|مون|30000|r|M\n03/09|رضا مقاول مباني|20000|r|M\n04/09|عربي ونش|10000|r|M\n04/09|طوب|10000|r|M\n06/09|رضا مقاول مباني|5000|r|M\n09/09|طوب|30000|r|M\n09/09|عربي ونش|10000|r|M\n09/09|رضا مقاول مباني|25000|r|M\n10/09|عربي ونش|11950|r|M\n10/09|محمد الموان|20000|r|M\n13/09|رضا مقاول مباني|10000|r|M\n15/09|رضا مقاول مباني|10000|r|M\n17/09|رضا مقاول مباني|10000|r|M\n17/09|طوب|40000|r|M\n22/09|طوب|46000|m|M\n24/09|رضا مقاول مباني|10000|r|M\n06/10|طوب|50000|r|M\n09/10|رضا مقاول مباني|300|r|M\n09/10|ابراهيم طوب|50000|r|M\n09/10|محمود طوب|30000|r|M\n09/10|رضا مقاول مباني|5000|r|M\n12/10|عربي ونش|10000|r|M\n12/10|رضا مقاول مباني|10000|r|M\n13/10|ممدوح طوب|10000|r|M\n16/10|رضا مقاول مباني|20000|r|M\n16/10|4 طن اسمنت|14400|r|M\n16/10|ممدوح طوب|50000|r|M\n23/10|طوب|40000|r|M\n26/10|رضا مقاول مباني|15000|r|M\n26/10|عربي ونش|15000|r|M\n28/10|ممدوح طوب|40000|r|M\n29/10|رضا مقاول مباني|15000|r|M\n01/11|عربي ونش|11500|r|M\n20/06|طلبات كهرباء للسقف|5500|r|E\n20/06|عدد 20 لفة خرطوم كهرباء|7900|r|E\n22/07|الكهربائي|2000|r|E\n29/07|رسوم فتح عداد كهرباء|500|m|E\n01/08|عداد كهرباء|30000|r|E\n04/08|شكارة علب كهرباء للسقف|450|m|E\n10/08|كهرباء المدخل|5000|r|E\n10/08|محمد الكهربائي|2500|m|E\n10/08|فاتورة ادوات كهرباء|2760|m|E\n28/08|طلبات كهرباء|7000|r|E\n03/09|تقديم الكهرباء|2000|r|E\n22/09|محمد الكهربائي|5700|r|E\n06/10|محمد الكهربائي|5000|r|E\n09/10|محمد الكهربائي|5000|r|E\n26/10|نادر الكهربائي|3700|r|E\n27/10|طلبات كهرباء|200000|r|E\n28/10|باقي حساب طلبات كهرباء|70100|r|E\n30/10|سواق عربية الكهرباء|4000|r|E\n01/11|الشيخ خالد الكهربائي|20000|r|E\n05/08|عداد مياه|40000|r|P\n15/08|عداد المياه|60000|r|P\n15/08|طلبات سباكة|2500|r|P\n15/08|طلبات سباكة للخزان|8000|r|P\n17/08|ماتور مياه|5500|m|P\n11/09|باقي حساب عداد المياه|20000|m|P\n17/09|تركيب عداد المياه|500|r|P\n13/10|من حساب طلبات سباكة|50000|r|P\n16/10|من حساب طلبات سباكة|50000|r|P\n17/10|باقي حساب طلبات سباكة|50000|r|P\n25/10|محمد السباك|5000|r|P\n05/11|محمد السباك|10000|r|P\n12/08|من حساب المون|40000|r|B\n12/08|اسلام بياض|1000|m|B\n12/08|اسلام بياض|3600|m|B\n22/10|عربون حلوق خشب للابواب|100000|r|N\n08/08|من حساب البوابات|20000|r|G\n26/08|من حساب البوابات والشبابيك|5000|r|G\n21/06|راتب م/ محمد|2500|m|X\n06/07|الظابط|22000|r|X\n14/07|اكرامية عربية الحديد|200|m|X\n16/07|مراضية سواق المجلس|1000|m|X\n21/07|راتب م/ محمد|2500|r|X\n23/07|طلبات ماتور|2180|m|X\n27/07|الحي|50000|r|X\n27/07|مراضية معاينة المياه|1000|m|X\n27/07|مراضية سواق المجلس|1500|m|X\n29/07|الظابط|15000|r|X\n29/07|مياه|5500|r|X\n29/07|لودر|2450|r|X\n30/07|عربية مياه|1500|r|X\n01/08|دخان عربية الطوب|400|m|X\n02/08|دخان للنجارين|200|m|X\n03/08|5 ساعات لودر|2250|m|X\n04/08|ابو زياد الغفير|1000|m|X\n06/08|الحي|20000|r|X\n06/08|عربية مياه|800|m|X\n07/08|لودر|4050|r|X\n08/08|عربيتين مياه|4030|m|X\n08/08|استهلاك مياه|4800|r|X\n10/08|ابو زياد الغفير|3000|r|X\n11/08|تركيب عداد|2000|m|X\n11/08|يومية عامل|600|m|X\n13/08|4 ساعات لودر|1800|m|X\n15/08|ابو زياد الغفير|1150|m|X\n16/08|الظابط|15000|r|X\n26/08|المجلس|20000|r|X\n28/08|شحن كارت الكهرباء|500|r|X\n28/08|الظابط|10000|r|X\n31/08|راتب م/ محمد|2500|r|X\n01/09|الجهاز|10000|m|X\n06/09|لودر|10000|r|X\n07/09|عامل|1000|r|X\n09/09|ابراهيم جاز|5000|r|X\n11/09|الجهاز|20000|m|X\n14/09|ابو زياد الغفير|3000|r|X\n15/09|الظابط|15000|r|X\n17/09|الجهاز|15000|r|X\n17/09|راتب م/ محمد|2500|m|X\n26/09|الجهاز|30000|r|X\n28/09|الظابط|10000|r|X\n30/09|الجهاز|10000|r|X\n05/10|احمد المحامي تصالح|10000|r|X\n08/10|الجهاز|25000|r|X\n08/10|فاتورة كهرباء|1425|m|X\n09/10|سواق المجلس|1000|r|X\n10/10|احمد المحامي تصالح|5000|r|X\n12/10|باقي حساب لودر|6000|r|X\n14/10|ابو زياد الغفير|3000|r|X\n16/10|الظابط|20000|r|X\n23/10|الحي|20000|r|X\n26/10|هيئة المجتمعات|10000|r|X\n26/10|الظابط|15000|r|X\n26/10|لودر|1000|r|X\n27/10|سواق المجلس|1000|r|X\n29/10|سواق عربية الخشب|4000|r|X\n29/10|سواق المجلس|2000|r|X";
 var CK={K:0,M:1,E:2,P:3,B:4,N:5,G:6,L:7,X:8};
 function seed(){return SEED.split("\n").map(function(l,k){var p=l.split("|"),d=p[0].split("/");return{id:k+1,d:"2026-"+d[1]+"-"+d[0],item:p[1],amt:+p[2],who:p[3]=="r"?"رفعت":"منتصر",cat:CATS[CK[p[4]]]}})}
-function load(){var s=localStorage.getItem("ledger2");try{E=s?JSON.parse(s):seed()}catch(e){E=seed()}if(!s)save()}
-function save(){try{localStorage.setItem("ledger2",JSON.stringify(E))}catch(e){}}
+function load(){var s=localStorage.getItem(lsk());try{E=s?JSON.parse(s):(CUR=="main"?seed():[])}catch(e){E=CUR=="main"?seed():[]}if(!s)save()}
+function save(){try{localStorage.setItem(lsk(),JSON.stringify(E))}catch(e){}}
 function dstamp(){var d=new Date();return d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear()}
 function fm(n){return Number(n).toLocaleString("en-US",{maximumFractionDigits:2})}
 function fd(s){var p=s.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
@@ -174,7 +179,7 @@ function report(){
  var tw={},days=[];
  S.forEach(function(x){if(!tw[x.d]){tw[x.d]={};days.push(x.d)}tw[x.d][x.who]=(tw[x.d][x.who]||0)+x.amt});
  var cell=function(v){return v?M(v):"-"};
- place({title:"عمارة الحاج رفعت",head:["م","التاريخ","اليوم"].concat(WHO),rows:days.map(function(d,k){return [k+1,fd(d),wd(d)].concat(WHO.map(function(w){return cell(tw[d][w])}))}),foot:[foot("الاجمالي",3,WHO.map(function(w){return M(sum(E.filter(function(x){return x.who==w})))}))]},true);
+ place({title:cname(),head:["م","التاريخ","اليوم"].concat(WHO),rows:days.map(function(d,k){return [k+1,fd(d),wd(d)].concat(WHO.map(function(w){return cell(tw[d][w])}))}),foot:[foot("الاجمالي",3,WHO.map(function(w){return M(sum(E.filter(function(x){return x.who==w})))}))]},true);
  place({title:"اجمالي الواصل",head:["الشريك","المبلغ"],rows:WHO.map(function(w){return [w,M(sum(E.filter(function(x){return x.who==w})))]}),foot:[foot("الاجمالي",1,[M(sum(E))])]},true);
  place({title:"اجمالي المصاريف",head:["البند","المصاريف"],rows:CATS.map(function(c){return [c,sum(E.filter(function(x){return x.cat==c}))]}).filter(function(r){return r[1]}).map(function(r){return [r[0],M(r[1])]}),foot:[foot("الاجمالي",1,[M(sum(E))])]},false);
  WHO.forEach(function(w){var R=S.filter(function(x){return x.who==w}),t=sum(R);
@@ -199,7 +204,7 @@ $("pdf").onclick=async function(){
    if(i)pdf.addPage();
    pdf.addImage(cv.toDataURL("image/jpeg",0.85),"JPEG",0,0,W,H);
   }
-  await dl.save({filename:"عمارة الحاج رفعت "+dstamp()+".pdf",data:pdf.output("arraybuffer")});
+  await dl.save({filename:bname()+" "+dstamp()+".pdf",data:pdf.output("arraybuffer")});
   $("msg").textContent="تم ✓";
  }catch(e){$("msg").textContent=(e&&e.code==="declined")?"تم الإلغاء":"حصل خطأ، جرب تاني"}
  $("rep").innerHTML="";
@@ -224,7 +229,7 @@ $("xl").onclick=async function(){
  var ws2=XLSX.utils.aoa_to_sheet(sm);ws2["!cols"]=[{wch:20},{wch:16}];
  var wb=XLSX.utils.book_new();wb.Workbook={Views:[{RTL:true}]};
  XLSX.utils.book_append_sheet(wb,ws,"المصاريف");XLSX.utils.book_append_sheet(wb,ws2,"الملخص");
- try{await dl.save({filename:"عمارة الحاج رفعت "+dstamp()+".xlsx",data:XLSX.write(wb,{bookType:"xlsx",type:"array"})});$("msg").textContent="تم ✓"}catch(e){$("msg").textContent="تم الإلغاء"}
+ try{await dl.save({filename:bname()+" "+dstamp()+".xlsx",data:XLSX.write(wb,{bookType:"xlsx",type:"array"})});$("msg").textContent="تم ✓"}catch(e){$("msg").textContent="تم الإلغاء"}
 };
 $("imp").onclick=function(){$("file").click()};
 $("file").onchange=async function(){
@@ -241,7 +246,7 @@ $("file").onchange=async function(){
 opts($("w"),WHO);opts($("c"),CATS);
 $("d").value=new Date().toISOString().slice(0,10);
 
-var LK="lists2";
+function LKf(){return CUR=="main"?"lists2":"lists_"+CUR}
 function fillSel(){var w=$("w").value,c=$("c").value;opts($("w"),WHO);opts($("c"),CATS);if(WHO.indexOf(w)>=0)$("w").value=w;if(CATS.indexOf(c)>=0)$("c").value=c}
 function applyLists(o){
  if(o.who&&o.who.length)WHO=o.who;if(o.cats&&o.cats.length)CATS=o.cats;
@@ -250,10 +255,10 @@ function applyLists(o){
 }
 function saveLists(){
  var o={who:WHO,cats:CATS,cont:CONT.map(function(c){return{n:c[0],k:c[1]}})};
- if(DB)DB.collection("meta").doc("lists").set(o).catch(function(){$("msg").textContent="فشل حفظ القوائم"});
- else try{localStorage.setItem(LK,JSON.stringify(o))}catch(e){}
+ if(DB)DB.collection("meta").doc(lk()).set(o).catch(function(){$("msg").textContent="فشل حفظ القوائم"});
+ else try{localStorage.setItem(LKf(),JSON.stringify(o))}catch(e){}
 }
-function loadLocalLists(){try{var s=localStorage.getItem(LK);if(s)applyLists(JSON.parse(s))}catch(e){}}
+function loadLocalLists(){try{var s=localStorage.getItem(LKf());if(s)applyLists(JSON.parse(s))}catch(e){}}
 function grp(t,k,arr,ph){
  return '<div class="mgt">'+t+'</div>'+arr.map(function(n){return '<span class="tg">'+n+'<b data-rm="'+k+'|'+n+'">✕</b></span>'}).join("")+'<div class="add"><input id="n_'+k+'" placeholder="'+ph+'"><button class="sec" data-add="'+k+'">إضافة</button></div>';
 }
@@ -283,7 +288,7 @@ document.addEventListener("click",function(e){
  }
 });
 var DB=null;
-function col(){return DB.collection("entries")}
+function col(){return DB.collection(ek())}
 function put(x){if(DB){col().doc("e"+x.id).set(x).catch(function(){$("msg").textContent="فشل الحفظ"})}else{E.push(x);save();render()}}
 function rm(id){if(DB){col().doc("e"+id).delete().catch(function(){$("msg").textContent="فشل الحذف"})}else{E=E.filter(function(y){return y.id!=id});save();render()}}
 async function batch(arr,fn){for(var i=0;i<arr.length;i+=20)await Promise.all(arr.slice(i,i+20).map(fn))}
@@ -301,17 +306,71 @@ async function firstSeed(){
  await batch(arr.concat(old),function(x){return col().doc("e"+x.id).set(x)});
  await m.set({seeded:true});$("msg").textContent="";
 }
-async function init(){
- try{DB=await claude.use("db")}catch(e){}
+var BLD=[{id:"main",name:"عمارة الحاج رفعت"}],CUR="main",unE=null,unL=null,bInit=false;
+var DEF={who:WHO.slice(),cats:CATS.slice(),cont:CONT.map(function(c){return{n:c[0],k:c[1]}})};
+function cname(){for(var i=0;i<BLD.length;i++)if(BLD[i].id==CUR)return BLD[i].name;return BLD[0].name}
+function bname(){return cname().replace(/[\\\/:*?"<>|]/g,"-")}
+function ek(){return CUR=="main"?"entries":"entries_"+CUR}
+function lk(){return CUR=="main"?"lists":"lists_"+CUR}
+function lsk(){return CUR=="main"?"ledger2":"ledger_"+CUR}
+function renderBar(){
+ var s=$("bsel");s.innerHTML="";BLD.forEach(function(b){s.appendChild(new Option(b.name,b.id))});s.value=CUR;
+ $("ttl").textContent="🏗️ مصاريف "+cname();document.title="مصاريف "+cname();
+}
+function saveB(){if(DB)DB.collection("meta").doc("buildings").set({list:BLD}).catch(function(){$("msg").textContent="فشل حفظ العمارات"});else try{localStorage.setItem("blds",JSON.stringify(BLD))}catch(e){}}
+function switchB(id){
+ if(unE){unE();unE=null}if(unL){unL();unL=null}
+ CUR=id;F="الكل";E=[];try{localStorage.setItem("curB",id)}catch(e){}
+ if(location.hash.slice(1)!=id)location.hash=id;
+ WHO=DEF.who.slice();CATS=DEF.cats.slice();CONT=DEF.cont.map(function(x){return[x.n,x.k]});
+ fillSel();renderBar();render();renderMgr();
  if(!DB){loadLocalLists();load();render();return}
  $("list").innerHTML='<div class="empty">جاري التحميل…</div>';
- var first=true;DB.collection("meta").doc("lists").onSnapshot(function(s){if(s.exists)applyLists(s.data())});
- DB.collection("entries").onSnapshot(function(s){
+ var first=true;
+ unL=DB.collection("meta").doc(lk()).onSnapshot(function(s){applyLists(s.exists?s.data():DEF)});
+ unE=DB.collection(ek()).onSnapshot(function(s){
   E=s.docs.map(function(d){return d.data()});render();
-  if(first){first=false;if(s.empty)firstSeed().catch(function(){$("msg").textContent="فشل التحميل الأول، أعد فتح الصفحة"})}
+  if(first){first=false;if(id=="main"&&s.empty)firstSeed().catch(function(){$("msg").textContent="فشل التحميل الأول، أعد فتح الصفحة"})}
+ },function(){$("msg").textContent="مشكلة في الاتصال"});
+}
+function validB(h){return BLD.some(function(b){return b.id==h})?h:"main"}
+$("bsel").onchange=function(){switchB(this.value)};
+function ask(t,def,cb){
+ $("dt").textContent=t;$("di").value=def||"";$("dlg").style.display="flex";setTimeout(function(){$("di").focus()},50);
+ $("dno").onclick=function(){$("dlg").style.display="none"};
+ $("dok").onclick=function(){var v=$("di").value.trim();if(!v)return;$("dlg").style.display="none";try{cb(v)}catch(e){$("msg").textContent="خطأ: "+(e&&e.message||e)}};
+}
+$("badd").onclick=function(){
+ ask("اسم العمارة الجديدة؟","",function(n){
+  var id="b"+Date.now().toString(36),o={who:WHO.slice(),cats:CATS.slice(),cont:[]};
+  BLD.push({id:id,name:n});saveB();
+  if(DB)DB.collection("meta").doc("lists_"+id).set(o);else try{localStorage.setItem("lists_"+id,JSON.stringify(o))}catch(e){}
+  switchB(id);$("msg").textContent="تمت إضافة "+n+" ✓";
+ });
+};
+$("bren").onclick=function(){
+ ask("اسم العمارة:",cname(),function(n){
+  BLD.forEach(function(b){if(b.id==CUR)b.name=n});saveB();renderBar();
+ });
+};
+window.addEventListener("hashchange",function(){var h=location.hash.slice(1);if(h&&h!=CUR&&BLD.some(function(b){return b.id==h}))switchB(h)});
+async function init(){
+ try{DB=await claude.use("db")}catch(e){}
+ var h="main";try{h=location.hash.slice(1)||localStorage.getItem("curB")||"main"}catch(e){}
+ if(!DB){try{var b=JSON.parse(localStorage.getItem("blds")||"null");if(b&&b.length)BLD=b}catch(e){}switchB(validB(h));return}
+ $("list").innerHTML='<div class="empty">جاري التحميل…</div>';
+ DB.collection("meta").doc("buildings").onSnapshot(function(s){
+  if(s.exists&&s.data().list&&s.data().list.length)BLD=s.data().list;
+  if(!bInit){bInit=true;switchB(validB(h))}else renderBar();
  },function(){$("msg").textContent="مشكلة في الاتصال"});
 }
 init();
+</script>
+<script>
+if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
+var IP=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();IP=e;var b=document.getElementById("inst");if(b)b.style.display="block"});
+window.addEventListener("appinstalled",function(){var b=document.getElementById("inst");if(b)b.style.display="none"});
+document.addEventListener("click",function(e){if(e.target&&e.target.id=="inst"&&IP){IP.prompt();IP=null;e.target.style.display="none"}});
 </script>
 </body>
 </html>
